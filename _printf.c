@@ -1,51 +1,27 @@
+#include <unistd.h>
+
 #include "main.h"
 
-
-
 /**
- * _printf - Receives the main string and all the necessary parameters to
- * print a formated string
- * @format: A string containing all the desired characters
- * Return: A total count of the characters printed
+ *_printf - takes in a string and prints different types of arguments for
+ * an unspecified amount of arguments
+ * @format: the initial string that tell us what is going to be printed
+ * Return: the amount of times we write to stdout
  */
 
 int _printf(const char *format, ...)
 
 {
 
-	int printed_chars;
+	int i, count;
 
-	conver_t f_list[] = {
 
-		{"c", print_char},
 
-		{"s", print_string},
+	int (*f)(va_list);
 
-		{"%", print_percent},
 
-		{"d", print_integer},
 
-		{"i", print_integer},
-
-		{"b", print_binary},
-
-		{"r", print_reversed},
-
-		{"R", rot13},
-
-		{"u", unsigned_integer},
-
-		{"o", print_octal},
-
-		{"x", print_hex},
-
-		{"X", print_heX},
-
-		{NULL, NULL}
-
-	};
-
-	va_list arg_list;
+	va_list list;
 
 
 
@@ -55,14 +31,54 @@ int _printf(const char *format, ...)
 
 
 
-	va_start(arg_list, format);
+	va_start(list, format);
 
-	/*Calling parser function*/
+	i = count = 0;
 
-	printed_chars = parser(format, f_list, arg_list);
 
-	va_end(arg_list);
 
-	return (printed_chars);
+	while (format[i] != '\0')
+
+	{
+
+		if (format[i] == '%')
+
+		{
+
+			if (format[i + 1] == '\0')
+
+				return (-1);
+
+			f = get_func(format[i + 1]);
+
+			if (f == NULL)
+
+				count += print_nan(format[i], format[i + 1]);
+
+			else
+
+				count += f(list);
+
+			i++;
+
+		}
+
+		else
+
+		{
+
+			_putchar(format[i]);
+
+			count++;
+
+		}
+
+		i++;
+
+	}
+
+	va_end(list);
+
+	return (count);
 
 }
