@@ -3,141 +3,66 @@
 
 
 /**
- * _printf - custom function that format and print data
- * @format:  list of types of arguments passed to the function
- * Return: int
+ * _printf - Receives the main string and all the necessary parameters to
+ * print a formated string
+ * @format: A string containing all the desired characters
+ * Return: A total count of the characters printed
  */
-
-
 
 int _printf(const char *format, ...)
 
 {
 
-	va_list list;
+	int printed_chars;
 
-	int idx, j;
+	conver_t f_list[] = {
 
-	int len_buf = 0;
+		{"c", print_char},
 
-	char *s;
+		{"s", print_string},
 
-	char *create_buff;
+		{"%", print_percent},
 
+		{"d", print_integer},
 
+		{"i", print_integer},
 
-	type_t ops[] = {
+		{"b", print_binary},
 
-		{"c", print_c},
+		{"r", print_reversed},
 
-		{"s", print_s},
+		{"R", rot13},
 
-		{"i", print_i},
+		{"u", unsigned_integer},
 
-		{"d", print_i},
+		{"o", print_octal},
 
-		{"b", print_bin},
+		{"x", print_hex},
+
+		{"X", print_heX},
 
 		{NULL, NULL}
 
 	};
 
+	va_list arg_list;
 
 
-	create_buff = malloc(1024 * sizeof(char));
 
-	if (create_buff == NULL)
-
-	{
-
-		free(create_buff);
+	if (format == NULL)
 
 		return (-1);
 
-	}
 
-	va_start(list, format);
 
-	if (format == NULL || list == NULL)
+	va_start(arg_list, format);
 
-		return (-1);
+	/*Calling parser function*/
 
-	for (idx = 0; format[idx] != '\0'; idx++)
+	printed_chars = parser(format, f_list, arg_list);
 
-	{
+	va_end(arg_list);
 
-		if (format[idx] == '%' && format[idx + 1] == '%')
-
-			continue;
-
-		else if (format[idx] == '%')
-
-		{
-
-			if (format[idx + 1] == ' ')
-
-				idx += _position(format, idx);
-
-			for (j = 0; ops[j].f != NULL; j++)
-
-			{
-
-				if (format[idx + 1] == *(ops[j].op))
-
-				{
-
-					s = ops[j].f(list);
-
-					if (s == NULL)
-
-						return (-1);
-
-					_strlen(s);
-
-					_strcat(create_buff, s, len_buf);
-
-					len_buf += _strlen(s);
-
-					idx++;
-
-					break;
-
-				}
-
-			}
-
-			if (ops[j].f == NULL)
-
-			{
-
-				create_buff[len_buf] = format[idx];
-
-				len_buf++;
-
-			}
-
-		}
-
-		else
-
-		{
-
-			create_buff[len_buf] = format[idx];
-
-			len_buf++;
-
-		}
-
-	}
-
-	create_buff[len_buf] = '\0';
-
-	write(1, create_buff, len_buf);
-
-	va_end(list);
-
-	free(create_buff);
-
-	return (len_buf);
+	return (printed_chars);
 
 }
