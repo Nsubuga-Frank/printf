@@ -1,6 +1,6 @@
-#ifndef __MAIN_H__
+#ifndef MAIN_H
 
-#define __MAIN_H__
+#define MAIN_H
 
 
 
@@ -8,25 +8,21 @@
 
 #include <stdlib.h>
 
-
-
 /**
- * struct printer - format printer struct
- * @spec: the format specifier
- * @fn: the function that handles @spec
+ * struct directives - holds fromat specifiers and their functions.
+ * @spec: char.
+ * @fspec: function pointer.
  */
 
-
-
-typedef struct printer
+typedef struct directives
 
 {
 
-	char *spec;
+	char spec;
 
-	int (*fn)(va_list);
+	int (*fspec)(va_list, int);
 
-} print_t;
+} forms;
 
 
 
@@ -34,26 +30,36 @@ int _putchar(char c);
 
 int _printf(const char *format, ...);
 
-int print_char(va_list ap);
+int (*get_print_func(char c))(va_list, int);
 
-int print_string(va_list ap);
+int print_ch(va_list, int);
 
-int print_space(va_list ap);
+int print_str(va_list, int);
 
-int print_int(va_list ap);
+int print_int(va_list, int);
 
-int print_unsigned(va_list ap);
+int _putchar_int(int, int);
 
-int print_octal(va_list ap);
+int print_numbers(unsigned long n, unsigned int base, const char *digits);
 
-int print_digit(int num, int *count);
+unsigned int find_length(unsigned int, int);
 
-int print_unsigned_digit(unsigned int num, int *count);
+int print_hex(va_list args, int len);
 
-int print_digit_octal(unsigned int num, int *count);
+int print_heX(va_list args, int len);
 
-int call_print_fn(char ch, va_list ap);
+int print_unsignd(va_list args, int len);
+
+int print_octal(va_list args, int len);
+
+int print_rot13(va_list args, int len);
+
+int print_b(va_list args, int len);
+
+int print_binary(unsigned int, int);
+
+int print_Str(va_list args, int len);
 
 
 
-#endif /* __MAIN_H__ */
+#endif
